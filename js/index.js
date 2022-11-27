@@ -74,5 +74,8 @@ function onBthRemove(e) {
 }
 
 function getId(id) {
-	console.log(id);
+	const data = JSON.parse(localStorage.getItem('newList'));
+	data.splice(id, 1);
+	localStorage.setItem('newList', JSON.stringify(data));
+	makeToDoList();
 }
