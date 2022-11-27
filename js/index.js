@@ -19,33 +19,60 @@ if (e.key === 'Enter') {
 		const dataToString = JSON.stringify(data);
 		localStorage.setItem('newList', dataToString);
 		e.target.value = '';
-
-
-
-		
-		// const storageList = localStorage.setItem(STORAGE__KEY, listDo);
-		
-		// console.log(storageList);
-		// toDoListContainer.append(makeToDoList());
+	makeToDoList();
 		
 
 	}
 
 }
 
+makeToDoList();
 
+buttonClear.addEventListener('click', onClearBth);
+
+function onClearBth() {
+	localStorage.setItem('newList', '[]');
+	makeToDoList();
+}
 
 function makeToDoList() {
-	const getStorageList = localStorage.getItem(STORAGE__KEY);
-	const list = document.createElement('li');
-	const span = document.createElement('span');
-	const buttonDone = document.createElement('button');
-	const buttonDel = document.createElement('button');
-	span.innerHTML = getStorageList;
-	buttonDone.textContent = 'Done';
-	buttonDel.textContent = 'Delete';
-	list.appendChild(span);
-	list.append(buttonDel);
-	list.append(buttonDone);
-	return list;
+	let dataList = JSON.parse(localStorage.getItem('newList'));
+	toDoListContainer.innerHTML = '';
+	
+	dataList.forEach((test,index) => {
+		toDoListContainer.insertAdjacentHTML('beforeend', `
+		<li><span>${test}</span>
+			<button>Done</button>
+			<button class="delete__task" data-taskId="${index}">Delete</button>
+		</li>`);
+	// const list = document.createElement('li');
+	// const span = document.createElement('span');
+	// const buttonDone = document.createElement('button');
+	// const buttonDel = document.createElement('button');
+	// span.textContent = test;
+	// buttonDone.textContent = 'Done';
+	// buttonDel.textContent = 'Delete';
+	// list.appendChild(span);
+	// list.append(buttonDel);
+	// list.append(buttonDone);
+	
+	// 	toDoListContainer.append(list);
+		
+	});
+}
+
+toDoListContainer.addEventListener('click', onBthRemove);
+
+function onBthRemove(e) {
+	
+	if (e.target.className === 'delete__task') {
+		console.log('good');
+		console.log(e.target);
+		console.log(e.target.dataset.taskid);
+		getId(e.target.dataset.taskid);
+	}
+}
+
+function getId(id) {
+	console.log(id);
 }
