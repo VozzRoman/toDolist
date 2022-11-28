@@ -81,6 +81,9 @@ function onBthRemoveAndDone(e) {
 		getIdDleteTask(e.target.dataset.taskid);
 	}
 	if (e.target.className === 'done__task') {
+		// e.target.disabled = true;
+		e.target.setAttribute("disabled", "disabled");
+		console.log(e.target);
 		getIdDoneTask(e.target.dataset.taskid);
 		
 	}
