@@ -19,6 +19,7 @@ if (e.key === 'Enter') {
 	data.push({
 		value: listDo,
 		state: 'pending',
+		disabled: 'enabled',
 	});
 	
 		console.log(data);
@@ -45,10 +46,10 @@ function makeToDoList() {
 	let dataList = JSON.parse(localStorage.getItem('newList'));
 	toDoListContainer.innerHTML = '';// очищяем контейнер для того что бы таски не повторялись при добавлении
 	
-	dataList.forEach(({value, state},index) => { // деструктуризировали обьект который пушим (ДАТА)
+	dataList.forEach(({value, state, disabled},index) => { // деструктуризировали обьект который пушим (ДАТА)
 		toDoListContainer.insertAdjacentHTML('beforeend', `
 		<li><span class="${state}">${value}</span>
-			<button class="done__task" data-taskId="${index}">Done</button>
+			<button class="done__task" data-taskId="${index}" ${disabled}>Done</button>
 			<button class="delete__task" data-taskId="${index}">Delete</button>
 		</li>`);
 	//ВАРИАНТ НЕ ШАЛБОННО
@@ -81,8 +82,7 @@ function onBthRemoveAndDone(e) {
 		getIdDleteTask(e.target.dataset.taskid);
 	}
 	if (e.target.className === 'done__task') {
-		// e.target.disabled = true;
-		e.target.setAttribute("disabled", "disabled");
+		
 		console.log(e.target);
 		getIdDoneTask(e.target.dataset.taskid);
 		
@@ -101,7 +101,8 @@ function getIdDoneTask(id) {
 	const data = JSON.parse(localStorage.getItem('newList'));
 	data[id] = {
 		...data[id],
-		state:'done',
+		state: 'done',
+		disabled: 'disabled',
 	}
 	localStorage.setItem('newList', JSON.stringify(data));
 	makeToDoList();
