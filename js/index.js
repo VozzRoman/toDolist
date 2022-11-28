@@ -81,10 +81,7 @@ function onBthRemoveAndDone(e) {
 		getIdDleteTask(e.target.dataset.taskid);
 	}
 	if (e.target.className === 'done__task') {
-		
 		getIdDoneTask(e.target.dataset.taskid);
-		e.target.setAttribute("disabled", "disabled");
-		console.log(e.target.disabled);
 		
 	}
 }
@@ -99,8 +96,25 @@ function getIdDleteTask(id) { //находим таксу по Айдишник�
 //функция кнопки выполнено ДАН
 function getIdDoneTask(id) {
 	const data = JSON.parse(localStorage.getItem('newList'));
-	data[id].state = 'done';
-
+	data[id] = {
+		...data[id],
+		state:'done',
+	}
 	localStorage.setItem('newList', JSON.stringify(data));
 	makeToDoList();
+}
+
+
+//-------Кнопка Дисaбле--------//
+
+const formBth = document.querySelector('.from__bth');
+console.log(formBth);
+
+formBth.addEventListener('click', onBthClick);
+
+function onBthClick(e) {
+	e.preventDefault();
+	if(e.target.className === 'just__bth')
+		console.log('ok');
+	e.target.disabled = true;
 }
