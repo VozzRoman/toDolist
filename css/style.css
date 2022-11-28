@@ -1,4 +1,7 @@
 ul {
   list-style: none;
 }
-/*# sourceMappingURL=style.css.map */
+
+span.done {
+  text-decoration: line-through;
+}

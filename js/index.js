@@ -9,16 +9,22 @@ enterTask.addEventListener('keydown', onPressEnter);
 function onPressEnter(e) {
 if (e.key === 'Enter') {
 	let listDo = e.target.value;
-	let data = JSON.parse(localStorage.getItem('newList'));
+	let data = JSON.parse(localStorage.getItem('newList'));//для того чтоюбы получить массив задач нужно создать
+	// пустой обьект с ключов в Локалсторидж а потом в него записывать таски и получать их по этому ключу
 	console.log(data);
 	if (!data) {
 		data = [];
 	}
-		data.push(listDo);
+	//но для состояния выполнено кнопки ДАН нужно пушить не массив тасков а обьект с свойством выполнено
+	data.push({
+		value: listDo,
+		state: 'pending',
+	});
+	
 		console.log(data);
 		const dataToString = JSON.stringify(data);
 		localStorage.setItem('newList', dataToString);
-		e.target.value = '';
+		e.target.value = ''; // очищяем инпут после ввода таска
 	makeToDoList();
 		
 
@@ -26,25 +32,26 @@ if (e.key === 'Enter') {
 
 }
 
-makeToDoList();
+makeToDoList();// запускаем функцию сразу что бы были видны все таски при загрузки страници
 
 buttonClear.addEventListener('click', onClearBth);
 
 function onClearBth() {
-	localStorage.setItem('newList', '[]');
+	localStorage.setItem('newList', '[]');//для того что бы удалить такси нужно что бы был путсой массив
 	makeToDoList();
 }
 
 function makeToDoList() {
 	let dataList = JSON.parse(localStorage.getItem('newList'));
-	toDoListContainer.innerHTML = '';
+	toDoListContainer.innerHTML = '';// очищяем контейнер для того что бы таски не повторялись при добавлении
 	
-	dataList.forEach((test,index) => {
+	dataList.forEach(({value, state},index) => { // деструктуризировали обьект который пушим (ДАТА)
 		toDoListContainer.insertAdjacentHTML('beforeend', `
-		<li><span>${test}</span>
-			<button>Done</button>
+		<li><span class="${state}">${value}</span>
+			<button class="done__task" data-taskId="${index}">Done</button>
 			<button class="delete__task" data-taskId="${index}">Delete</button>
 		</li>`);
+	//ВАРИАНТ НЕ ШАЛБОННО
 	// const list = document.createElement('li');
 	// const span = document.createElement('span');
 	// const buttonDone = document.createElement('button');
@@ -61,21 +68,39 @@ function makeToDoList() {
 	});
 }
 
-toDoListContainer.addEventListener('click', onBthRemove);
+toDoListContainer.addEventListener('click', onBthRemoveAndDone);
 
-function onBthRemove(e) {
+
+
+function onBthRemoveAndDone(e) {
 	
 	if (e.target.className === 'delete__task') {
 		console.log('good');
 		console.log(e.target);
 		console.log(e.target.dataset.taskid);
-		getId(e.target.dataset.taskid);
+		getIdDleteTask(e.target.dataset.taskid);
+	}
+	if (e.target.className === 'done__task') {
+		
+		getIdDoneTask(e.target.dataset.taskid);
+		e.target.setAttribute("disabled", "disabled");
+		console.log(e.target.disabled);
+		
 	}
 }
 
-function getId(id) {
+//функция кнопки удалить таску
+function getIdDleteTask(id) { //находим таксу по Айдишнику
 	const data = JSON.parse(localStorage.getItem('newList'));
 	data.splice(id, 1);
+	localStorage.setItem('newList', JSON.stringify(data));
+	makeToDoList();
+}
+//функция кнопки выполнено ДАН
+function getIdDoneTask(id) {
+	const data = JSON.parse(localStorage.getItem('newList'));
+	data[id].state = 'done';
+
 	localStorage.setItem('newList', JSON.stringify(data));
 	makeToDoList();
 }
